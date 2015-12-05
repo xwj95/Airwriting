@@ -13,26 +13,25 @@ class Canvas {
     
 private:
     Canvas();
-    ~Canvas();
     void create();
     void destroy();
     static Canvas *instance;
     
 public:
+    ~Canvas();
     static Canvas* getInstance();
     
 private:
     float **canvas;
-    int m, n;
+    unsigned int m, n;
 
 public:
     void clear();
-    void setSize(int m, int n);
     float** getCanvas();
     int getm();
     int getn();
     
-    void setPixel(int i, int j, float value);
+    void setPixel(unsigned int i, unsigned int j, float value);
 };
 
 #endif /* Canvas_h */

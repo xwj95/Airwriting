@@ -7,6 +7,8 @@
 //
 
 #include "Backend.h"
+#include "Canvas.h"
+#include "Task.h"
 
 Backend *Backend::instance = new Backend();
 
@@ -20,16 +22,24 @@ Backend* Backend::getInstance() {
     return instance;
 }
 
-void Backend::receive() {
-    Canvas *instance = Canvas::getInstance();
-    float **canvas = instance->getCanvas();
-    int m = instance->getm();
-    int n = instance->getn();
-    float image[m][n];
-    for (int i = 0; i < m; ++i) {
-        for (int j = 0; i < n; ++j) {
-            image[i][j] = canvas[i][j];
+void Backend::analyse(float **image, unsigned int m, unsigned int n) {
+}
+
+void Backend::listen() {
+    Task *tasks = Task::getInstance();
+    Canvas *canvas = Canvas::getInstance();
+    while (listening) {
+        if (tasks->getSize()) {
+            analyse(tasks->getTask(), canvas->getm(), canvas->getn());
+            tasks->popTask();
         }
     }
-    instance->clear();
+}
+
+void Backend::start() {
+    listening = true;
+}
+
+void Backend::stop() {
+    listening = false;
 }

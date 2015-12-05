@@ -11,7 +11,6 @@
 
 #include "Leap.h"
 #include "AirwritingListener.h"
-#include "Backend.h"
 
 using namespace Leap;
 

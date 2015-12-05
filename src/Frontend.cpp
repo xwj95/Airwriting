@@ -7,8 +7,6 @@
 //
 
 #include "Frontend.h"
-#include <iostream>
-#include <string>
 
 Frontend *Frontend::instance = new Frontend();
 

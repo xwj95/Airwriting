@@ -26,9 +26,9 @@ public:
     virtual void onDeviceChange(const Controller&);
     virtual void onServiceConnect(const Controller&);
     virtual void onServiceDisconnect(const Controller&);
-
+    
 private:
-    void send();
+    void push();
 };
 
 #endif /* AirwritingListener_h */

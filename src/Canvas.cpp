@@ -11,6 +11,9 @@
 Canvas *Canvas::instance = new Canvas();
 
 Canvas::Canvas() {
+    m = 200;
+    n = 200;
+    create();
 }
 
 Canvas::~Canvas() {
@@ -32,7 +35,7 @@ void Canvas::create() {
 }
 
 void Canvas::destroy() {
-    if ((m <= 0) || (n <= 0)) {
+    if (!canvas) {
         return;
     }
     for (int i = 0; i < m; ++i) {
@@ -49,19 +52,6 @@ void Canvas::clear() {
     }
 }
 
-void Canvas::setSize(int m, int n) {
-    destroy();
-    if (m < 1) {
-        m = 200;
-    }
-    if (n < 1) {
-        n = 200;
-    }
-    this->m = m;
-    this->n = n;
-    create();
-}
-
 float** Canvas::getCanvas() {
     return canvas;
 }
@@ -74,6 +64,6 @@ int Canvas::getn() {
     return n;
 }
 
-void Canvas::setPixel(int i, int j, float value) {
+void Canvas::setPixel(unsigned int i, unsigned int j, float value) {
     canvas[i][j] = value;
 }

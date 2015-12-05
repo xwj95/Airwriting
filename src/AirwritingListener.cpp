@@ -7,7 +7,7 @@
 //
 
 #include "AirwritingListener.h"
-#include "Backend.h"
+#include "Task.h"
 
 const std::string fingerNames[] = {"Thumb", "Index", "Middle", "Ring", "Pinky"};
 const std::string boneNames[] = {"Metacarpal", "Proximal", "Middle", "Distal"};
@@ -37,14 +37,13 @@ void AirwritingListener::onExit(const Controller& controller) {
 void AirwritingListener::onFrame(const Controller& controller) {
     // Get the most recent frame and report some basic information
     const Frame frame = controller.frame();
-    /*
+
     std::cout << "Frame id: " << frame.id()
     << ", timestamp: " << frame.timestamp()
     << ", hands: " << frame.hands().count()
     << ", extended fingers: " << frame.fingers().extended().count()
     << ", tools: " << frame.tools().count()
     << ", gestures: " << frame.gestures().count() << std::endl;
-    */
     
     /*
     HandList hands = frame.hands();
@@ -206,6 +205,6 @@ void AirwritingListener::onServiceDisconnect(const Controller& controller) {
     std::cout << "Service Disconnected" << std::endl;
 }
 
-void AirwritingListener::send() {
-    Backend::getInstance()->receive();
+void AirwritingListener::push() {
+    Task::getInstance()->pushTask();
 }

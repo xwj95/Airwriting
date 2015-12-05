@@ -9,8 +9,6 @@
 #ifndef Backend_h
 #define Backend_h
 
-#include "Canvas.h"
-
 class Backend {
     
 private:
@@ -20,9 +18,14 @@ private:
 public:
     static Backend* getInstance();
     
-public:
-    void receive();
+private:
+    bool listening;
+    void analyse(float **image, unsigned int m, unsigned int n);
     
+public:
+    void listen();
+    void start();
+    void stop();
 };
 
 #endif /* Backend_h */
