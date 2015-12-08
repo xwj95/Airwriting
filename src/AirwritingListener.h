@@ -11,6 +11,13 @@
 
 #include "leap.h"
 
+#define FINGER_INDEX 1
+#define FINGER_X_MAX 50
+#define FINGER_Z_MAX 50
+#define FINGER_Y_MIN 10
+#define FINGER_Y_MAX 300
+#define GESTURE_TAP_MAX_TIMESTAMP_DELTA 80000
+
 using namespace Leap;
 
 class AirwritingListener : public Listener {
@@ -26,9 +33,16 @@ public:
     virtual void onDeviceChange(const Controller&);
     virtual void onServiceConnect(const Controller&);
     virtual void onServiceDisconnect(const Controller&);
+    AirwritingListener();
+    ~AirwritingListener();
     
 private:
-    void push();
+    bool sampling;
+    void sample(const Finger &finger);
+    
+    unsigned long long lastTimestamp;
+    void push(unsigned long long timestamp);
+    
 };
 
 #endif /* AirwritingListener_h */

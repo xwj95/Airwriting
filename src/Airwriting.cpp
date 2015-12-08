@@ -20,13 +20,18 @@ int main() {
     Task *task = Task::getInstance();
     
     std::cout << "Press Enter to quit..." << std::endl;
+    canvas->start();
+    std::thread thd_canvas(std::mem_fn(&Canvas::show), canvas);
     backend->start();
-    std::thread thd(std::mem_fn(&Backend::listen), backend);
+    std::thread thd_backend(std::mem_fn(&Backend::listen), backend);
     frontend->start();
     std::cin.get();
+    
     frontend->stop();
     backend->stop();
-    thd.join();
+    thd_backend.join();
+    canvas->stop();
+    thd_canvas.join();
     
     delete task;
     delete canvas;

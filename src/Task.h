@@ -26,9 +26,12 @@ private:
     
 public:
     unsigned long getSize();
-    float** getTask();
+    float** getTask(unsigned int m, unsigned int n);
     void pushTask();
     void popTask();
+    
+    float** compress(float **image, unsigned int m, unsigned int n);
+    void release(float **image, unsigned int m, unsigned int n);
 };
 
 #endif /* Task_h */
