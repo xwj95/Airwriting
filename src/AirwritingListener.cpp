@@ -86,7 +86,7 @@ void AirwritingListener::onFrame(const Controller& controller) {
         const FingerList fingers = hand.fingers();
         for (FingerList::const_iterator fl = fingers.begin(); fl != fingers.end(); ++fl) {
             const Finger finger = *fl;
-            sample(finger);
+            sample(finger, timestamp);
             
             /*
             std::cout << std::string(4, ' ') <<  fingerNames[finger.type()]
@@ -200,7 +200,7 @@ void AirwritingListener::onFrame(const Controller& controller) {
                 break;
         }
     }
-    
+
     
     /*
     if (!frame.hands().isEmpty() || !gestures.isEmpty()) {
@@ -255,9 +255,9 @@ void AirwritingListener::push(unsigned long long timestamp) {
     lastTimestamp = timestamp;
 }
 
-void AirwritingListener::sample(const Finger &finger) {
+void AirwritingListener::sample(const Finger &finger, unsigned long long timestamp) {
     if (finger.type() == FINGER_INDEX) {
-        if (sampling) {
+        if ((sampling) && (timestamp - lastTimestamp > GESTURE_TAP_MIN_TIMESTAMP_DELTA)) {
             float x = finger.tipPosition().x;
             float y = finger.tipPosition().y;
             float z = finger.tipPosition().z;

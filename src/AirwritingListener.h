@@ -12,11 +12,12 @@
 #include "leap.h"
 
 #define FINGER_INDEX 1
-#define FINGER_X_MAX 50
-#define FINGER_Z_MAX 50
+#define FINGER_X_MAX 150
+#define FINGER_Z_MAX 150
 #define FINGER_Y_MIN 10
-#define FINGER_Y_MAX 300
-#define GESTURE_TAP_MAX_TIMESTAMP_DELTA 80000
+#define FINGER_Y_MAX 400
+#define GESTURE_TAP_MAX_TIMESTAMP_DELTA 700000
+#define GESTURE_TAP_MIN_TIMESTAMP_DELTA 100000
 
 using namespace Leap;
 
@@ -38,7 +39,7 @@ public:
     
 private:
     bool sampling;
-    void sample(const Finger &finger);
+    void sample(const Finger &finger, unsigned long long timestamp);
     
     unsigned long long lastTimestamp;
     void push(unsigned long long timestamp);

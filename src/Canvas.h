@@ -14,8 +14,8 @@
 
 #define CANVAS_M 336
 #define CANVAS_N 336
-#define WINDOW_X 224
-#define WINDOW_Y 224
+#define CANVAS_WINDOW_X 100
+#define CANVAS_WINDOW_Y 300
 
 class Canvas {
     
@@ -30,20 +30,20 @@ public:
     static Canvas* getInstance();
     
 private:
-    float **canvas;
+    double **canvas;
     unsigned int m, n;
 
 public:
     void clear();
-    float** getCanvas();
+    double** getCanvas();
     int getm();
     int getn();
     
-    void setPixel(unsigned int i, unsigned int j, float value);
-    void setPixel(float i, float j, float value);
+    void setPixel(unsigned int i, unsigned int j, double value);
+    void setPixel(double y, double x, double value);
     
 private:
-    IplImage *image;
+    IplImage *cvImage;
     bool displaying;
     const std::string title = "Airwrite";
     

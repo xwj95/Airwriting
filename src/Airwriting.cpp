@@ -22,6 +22,8 @@ int main() {
     std::cout << "Press Enter to quit..." << std::endl;
     canvas->start();
     std::thread thd_canvas(std::mem_fn(&Canvas::show), canvas);
+    task->start();
+    std::thread thd_task(std::mem_fn(&Task::show), task);
     backend->start();
     std::thread thd_backend(std::mem_fn(&Backend::listen), backend);
     frontend->start();
@@ -30,6 +32,8 @@ int main() {
     frontend->stop();
     backend->stop();
     thd_backend.join();
+    task->stop();
+    thd_task.join();
     canvas->stop();
     thd_canvas.join();
     

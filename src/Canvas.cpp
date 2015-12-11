@@ -16,7 +16,7 @@ Canvas::Canvas() {
     n = CANVAS_N;
     create();
     cvNamedWindow(title.data(), 0);
-    cvMoveWindow(title.data(), WINDOW_X, WINDOW_Y);
+    cvMoveWindow(title.data(), CANVAS_WINDOW_X, CANVAS_WINDOW_Y);
 }
 
 Canvas::~Canvas() {
@@ -32,13 +32,13 @@ Canvas* Canvas::getInstance() {
 }
 
 void Canvas::create() {
-    canvas = new float*[m];
+    canvas = new double*[m];
     for (int i = 0; i < m; ++i) {
-        canvas[i] = new float[n];
+        canvas[i] = new double[n];
     }
     
-    image = cvCreateImage(cvSize(m, n), 8, 3);
-    cvZero(image);
+    cvImage = cvCreateImage(cvSize(m, n), 8, 3);
+    cvZero(cvImage);
 }
 
 void Canvas::destroy() {
@@ -50,7 +50,7 @@ void Canvas::destroy() {
     }
     delete canvas;
     
-    cvReleaseImage(&image);
+    cvReleaseImage(&cvImage);
 }
 
 void Canvas::clear() {
@@ -60,10 +60,10 @@ void Canvas::clear() {
         }
     }
     
-    cvZero(image);
+    cvZero(cvImage);
 }
 
-float** Canvas::getCanvas() {
+double** Canvas::getCanvas() {
     return canvas;
 }
 
@@ -77,12 +77,12 @@ int Canvas::getn() {
 
 void Canvas::show() {
     while (displaying) {
-        cvShowImage(title.data(), image);
+        cvShowImage(title.data(), cvImage);
         cvWaitKey(10);
     }
 }
 
-void Canvas::setPixel(unsigned int j, unsigned int i, float value) {
+void Canvas::setPixel(unsigned int i, unsigned int j, double value) {
     if ((i >= m) || (j >= n)) {
         return;
     }
@@ -94,10 +94,10 @@ void Canvas::setPixel(unsigned int j, unsigned int i, float value) {
         canvas[i][j] = 1;
     }
     
-    cvSet2D(image, i, j, CV_RGB(canvas[i][j] * 255, canvas[i][j] * 255, canvas[i][j] * 255));
+    cvSet2D(cvImage, i, j, CV_RGB(canvas[i][j] * 255, canvas[i][j] * 255, canvas[i][j] * 255));
 }
 
-void Canvas::setPixel(float x, float y, float value) {
+void Canvas::setPixel(double y, double x, double value) {
     if (fabs(x) > 1 || fabs(y) > 1) {
         return;
     }
@@ -107,8 +107,8 @@ void Canvas::setPixel(float x, float y, float value) {
     unsigned int x2 = x1 + 1;
     unsigned int y1 = floor(y * n);
     unsigned int y2 = y1 + 1;
-    float wx = x * m - x1;
-    float wy = y * n - y1;
+    double wx = x * m - x1;
+    double wy = y * n - y1;
     setPixel(x1, y1, value * wx * wy);
     setPixel(x1, y2, value * wx * (1 - wy));
     setPixel(x2, y1, value * (1 - wx) * wy);

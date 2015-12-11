@@ -12,12 +12,18 @@
 Task *Task::instance = new Task();
 
 Task::Task() {
+    cvImage = cvCreateImage(cvSize(COMPRESS_M, COMPRESS_N), 8, 3);
+    cvZero(cvImage);
+    cvNamedWindow(title.data(), 0);
+    cvMoveWindow(title.data(), CHARACTER_WINDOW_X, CHARACTER_WINDOW_Y);
 }
 
 Task::~Task() {
     while (!tasks.empty()) {
         popTask();
     }
+    cvReleaseImage(&cvImage);
+    cvDestroyAllWindows();
 }
 
 Task* Task::getInstance() {
@@ -31,7 +37,7 @@ unsigned long Task::getSize() {
     return tasks.size();
 }
 
-float** Task::getTask(unsigned int m, unsigned int n) {
+double** Task::getTask(unsigned int m, unsigned int n) {
     if (!tasks.empty()) {
         return compress(tasks.front(), m, n);
     }
@@ -39,12 +45,12 @@ float** Task::getTask(unsigned int m, unsigned int n) {
 }
 
 void Task::pushTask() {
-    float **canvas = Canvas::getInstance()->getCanvas();
+    double **canvas = Canvas::getInstance()->getCanvas();
     int m = Canvas::getInstance()->getm();
     int n = Canvas::getInstance()->getn();
-    float **image = new float*[m];
+    double **image = new double*[m];
     for (int i = 0; i < m; ++i) {
-        image[i] = new float[n];
+        image[i] = new double[n];
         for (int j = 0; j < n; ++j) {
             image[i][j] = canvas[i][j];
         }
@@ -57,7 +63,7 @@ void Task::popTask() {
     if (tasks.empty()) {
         return;
     }
-    float **image = tasks.front();
+    double **image = tasks.front();
     tasks.pop();
     if (!image) {
         return;
@@ -68,10 +74,10 @@ void Task::popTask() {
     delete image;
 }
 
-float** Task::compress(float **image, unsigned int m, unsigned int n) {
-    float **image_compressed = new float*[m];
+double** Task::compress(double **image, unsigned int m, unsigned int n) {
+    double **image_compressed = new double*[m];
     for (int i = 0; i < m; ++i) {
-        image_compressed[i] = new float[n];
+        image_compressed[i] = new double[n];
     }
     unsigned m_origin = Canvas::getInstance()->getm();
     unsigned n_origin = Canvas::getInstance()->getn();
@@ -83,31 +89,48 @@ float** Task::compress(float **image, unsigned int m, unsigned int n) {
             image_compressed[i][j] = 0;
             for (int p = 0; p < m_pooling; ++p) {
                 for (int q = 0; q < n_pooling; ++q) {
-                    float value = image[i * m_pooling + p][j * n_pooling + q];
+                    double value = image[i * m_pooling + p][j * n_pooling + q];
                     if ((value == value) && (value > image_compressed[i][j])) {
-                        image_compressed[i][j] = image[i * m_pooling + p][j * n_pooling + q];
+                        image_compressed[i][j] += image[i * m_pooling + p][j * n_pooling + q];
                     }
                 }
             }
+            image_compressed[i][j] = image_compressed[i][j];
         }
     }
     
     for (int i = 0; i < m; ++i) {
         for (int j = 0; j < n; ++j) {
-            if (image_compressed[i][j] < 0.1) {
+            if (image_compressed[i][j] < 1e-7) {
                 image_compressed[i][j] = 0;
             }
-            if (image_compressed[i][j] > 0.1) {
+            if (image_compressed[i][j] > 1 - 1e-7) {
                 image_compressed[i][j] = 1;
             }
+            cvSet2D(cvImage, i, j, CV_RGB(image_compressed[i][j] * 255, image_compressed[i][j] * 255, image_compressed[i][j] * 255));
         }
     }
     return image_compressed;
 }
 
-void Task::release(float **image, unsigned int m, unsigned int n) {
+void Task::release(double **image, unsigned int m, unsigned int n) {
     for (int i = 0; i < m; ++i) {
         delete image[i];
     }
     delete image;
+}
+
+void Task::show() {
+    while (displaying) {
+        cvShowImage(title.data(), cvImage);
+        cvWaitKey(10);
+    }
+}
+
+void Task::start() {
+    displaying = true;
+}
+
+void Task::stop() {
+    displaying = false;
 }

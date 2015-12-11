@@ -10,6 +10,14 @@
 #define Task_h
 
 #include <queue>
+#include <string>
+#include "opencv/highgui.h"
+#include "opencv/cv.h"
+
+#define COMPRESS_M 28
+#define COMPRESS_N 28
+#define CHARACTER_WINDOW_X 100
+#define CHARACTER_WINDOW_Y 100
 
 class Task {
     
@@ -22,16 +30,26 @@ public:
     static Task* getInstance();
     
 private:
-    std::queue<float**> tasks;
+    std::queue<double**> tasks;
     
 public:
     unsigned long getSize();
-    float** getTask(unsigned int m, unsigned int n);
+    double** getTask(unsigned int m, unsigned int n);
     void pushTask();
     void popTask();
     
-    float** compress(float **image, unsigned int m, unsigned int n);
-    void release(float **image, unsigned int m, unsigned int n);
+    double** compress(double **image, unsigned int m, unsigned int n);
+    void release(double **image, unsigned int m, unsigned int n);
+    
+private:
+    IplImage *cvImage;
+    bool displaying;
+    std::string title = "Character";
+    
+public:
+    void show();
+    void start();
+    void stop();
 };
 
 #endif /* Task_h */

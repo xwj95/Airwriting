@@ -9,8 +9,26 @@
 #ifndef Backend_h
 #define Backend_h
 
+#define CATEGORY_SHOW 4
+
 #define BACKEND_M 28
 #define BACKEND_N 28
+
+#define CNN_M0 28
+#define CNN_N0 28
+#define CNN_M1 14
+#define CNN_N1 14
+#define CNN_M2 7
+#define CNN_N2 7
+#define CNN_CHANNEL0 1
+#define CNN_CHANNEL1 8
+#define CNN_CHANNEL2 4
+#define CNN_KERNEL1 3
+#define CNN_KERNEL2 3
+#define CNN_POOLING1 2
+#define CNN_POOLING2 2
+#define CNN_SOFTMAX 196
+#define CNN_CATEGORY 62
 
 class Backend {
     
@@ -24,12 +42,23 @@ public:
 private:
     unsigned int m, n;
     bool listening;
-    void analyse(float **image);
+    void analyse(double **image);
     
 public:
     void listen();
     void start();
     void stop();
+    
+private:
+    void init();
+    char character(int c);
+    double maxPool(double a, double b, double c, double d);
+    
+    double matrix1[CNN_CHANNEL1][CNN_CHANNEL0][CNN_KERNEL1][CNN_KERNEL1];
+    double matrix2[CNN_CHANNEL2][CNN_CHANNEL1][CNN_KERNEL2][CNN_KERNEL2];
+    double matrixw[CNN_SOFTMAX][CNN_CATEGORY];
+    double matrixb[CNN_CATEGORY];
+
 };
 
 #endif /* Backend_h */
