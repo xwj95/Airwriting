@@ -12,8 +12,8 @@
 #include "opencv/highgui.h"
 #include "opencv/cv.h"
 
-#define CANVAS_M 336
-#define CANVAS_N 336
+#define CANVAS_M 300
+#define CANVAS_N 300
 #define CANVAS_WINDOW_X 100
 #define CANVAS_WINDOW_Y 300
 

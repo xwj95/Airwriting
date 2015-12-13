@@ -263,7 +263,7 @@ void AirwritingListener::sample(const Finger &finger, unsigned long long timesta
             float z = finger.tipPosition().z;
             if ((y > FINGER_Y_MIN) && (y < FINGER_Y_MAX)) {
                 if ((fabs(x) < FINGER_X_MAX) && (fabs(z) < FINGER_Z_MAX)) {
-                    Canvas::getInstance()->setPixel(x / FINGER_X_MAX, z / FINGER_Z_MAX, y / 30);
+                    Canvas::getInstance()->setPixel(x / FINGER_X_MAX, z / FINGER_Z_MAX, y / 10);
                 }
             }
         }

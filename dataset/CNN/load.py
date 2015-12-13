@@ -8,7 +8,7 @@ def one_hot(x, n):
 	return o_h
 
 def dataset(onehot = True):
-	data = spio.loadmat('dataset_random.mat', struct_as_record = True)
+	data = spio.loadmat('dataset_hnd_random.mat', struct_as_record = True)
 	train_x = data['trainX'].astype(float)
 	train_y = data['trainY'].astype(int)
 	# data = spio.loadmat('mnist.mat', struct_as_record = True)

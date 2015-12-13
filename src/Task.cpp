@@ -12,7 +12,7 @@
 Task *Task::instance = new Task();
 
 Task::Task() {
-    cvImage = cvCreateImage(cvSize(COMPRESS_M, COMPRESS_N), 8, 3);
+    cvImage = cvCreateImage(cvSize(COMPRESS_M * COMPRESS_K, COMPRESS_N * COMPRESS_K), 8, 3);
     cvZero(cvImage);
     cvNamedWindow(title.data(), 0);
     cvMoveWindow(title.data(), CHARACTER_WINDOW_X, CHARACTER_WINDOW_Y);
@@ -107,7 +107,11 @@ double** Task::compress(double **image, unsigned int m, unsigned int n) {
             if (image_compressed[i][j] > 1 - 1e-7) {
                 image_compressed[i][j] = 1;
             }
-            cvSet2D(cvImage, i, j, CV_RGB(image_compressed[i][j] * 255, image_compressed[i][j] * 255, image_compressed[i][j] * 255));
+            for (int k1 = 0; k1 < COMPRESS_K; ++k1) {
+                for (int k2 = 0; k2 < COMPRESS_K; ++k2) {
+                    cvSet2D(cvImage, i * COMPRESS_K + k1, j * COMPRESS_K + k2, CV_RGB(image_compressed[i][j] * 255, image_compressed[i][j] * 255, image_compressed[i][j] * 255));
+                }
+            }
         }
     }
     return image_compressed;

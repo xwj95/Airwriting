@@ -29,20 +29,20 @@ def softmax(X):
 	return e_x / e_x.sum(axis = 1).dimshuffle(0, 'x')
 
 def model(X, w1, w2, w, b):
-	l1 = relu(conv2d(X, w1, border_mode = 'full'))
-	l1 = max_pool_2d(l1, (2, 2))
+	l11 = relu(conv2d(X, w1, border_mode = 'valid'))
+	l1 = max_pool_2d(l11, (2, 2))
 
-	l2 = relu(conv2d(l1, w2))
-	l2 = max_pool_2d(l2, (2, 2))
-	l2 = T.flatten(l2, outdim = 2)
+	l21 = relu(conv2d(l1, w2, border_mode = 'valid'))
+	l22 = max_pool_2d(l21, (2, 2))
+	l2 = T.flatten(l22, outdim = 2)
 
 	l3 = T.dot(l2, w) + b
 	l = softmax(l3)
 	return l;
 
-def cnn(train_x, train_y, learning_rate = 0.05, batch = 100, epochs = 500):
+def cnn(train_x, train_y, learning_rate = 0.05, batch = 100, epochs = 100):
 
-	train_x = train_x.reshape(-1, 1, 28, 28)
+	train_x = train_x.reshape(-1, 1, 100, 100)
 
 	X = T.dtensor4()
 	Y = T.fmatrix()
@@ -72,6 +72,8 @@ def cnn(train_x, train_y, learning_rate = 0.05, batch = 100, epochs = 500):
 		accuracy = hit / train_x.shape[0]
 		now = time.strftime('%X', time.localtime())
 		print '[%s] epoch %d, accuracy = %.4f' %(now, epoch + 1, accuracy)
+		if accuracy > 0.9950:
+			break
 
 	f = open("model.txt", "w")
 	lists1 = w1.get_value(borrow = True)

@@ -14,8 +14,9 @@
 #include "opencv/highgui.h"
 #include "opencv/cv.h"
 
-#define COMPRESS_M 28
-#define COMPRESS_N 28
+#define COMPRESS_M 100
+#define COMPRESS_N 100
+#define COMPRESS_K 2
 #define CHARACTER_WINDOW_X 100
 #define CHARACTER_WINDOW_Y 100
 

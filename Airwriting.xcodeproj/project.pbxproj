@@ -167,13 +167,6 @@
 			name = LeapMotionLibraries;
 			sourceTree = "<group>";
 		};
-		5F039D931C186B1700DFA51D /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Model;
-			sourceTree = "<group>";
-		};
 		5F2E3A5F1C154AF5001CF711 /* OpenCVLibraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -238,7 +231,6 @@
 		5FA351181C0973CB0019210E = {
 			isa = PBXGroup;
 			children = (
-				5F039D931C186B1700DFA51D /* Model */,
 				5F039D921C186AFE00DFA51D /* LeapMotionLibraries */,
 				5F2E3A5F1C154AF5001CF711 /* OpenCVLibraries */,
 				5FA351231C0973CB0019210E /* src */,

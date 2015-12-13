@@ -61,11 +61,8 @@ void Backend::init() {
     for (int c = 0; c < CNN_CATEGORY; ++c) {
         fin >> matrixb[c];
     }
+    std::cout << matrixb[CNN_CATEGORY - 1] << std::endl;
     fin.close();
-}
-
-double Backend::maxPool(double a, double b, double c, double d) {
-    return std::max(std::max(a, b), std::max(c, d));
 }
 
 char Backend::character(int c) {
@@ -82,14 +79,7 @@ char Backend::character(int c) {
 }
 
 void Backend::analyse(double **image) {
-    
-    double input[CNN_CHANNEL0][CNN_M0 + 2][CNN_N0 + 2];
-    double output11[CNN_CHANNEL1][CNN_M0 + 2][CNN_N0 + 2];
-    double output1[CNN_CHANNEL1][CNN_M1 + 2][CNN_N1 + 2];
-    double output21[CNN_CHANNEL2][CNN_M1 + 2][CNN_N1 + 2];
-    double output2[CNN_CHANNEL2][CNN_M2 + 2][CNN_N2 + 2];
-    double output[CNN_CATEGORY];
-    
+
     memset(input, 0, sizeof(input));
     memset(output11, 0, sizeof(output11));
     memset(output1, 0, sizeof(output1));
@@ -100,12 +90,12 @@ void Backend::analyse(double **image) {
     for (int i = 0; i < CNN_M0; ++i) {
         for (int j = 0; j < CNN_N0; ++j) {
             for (int c0 = 0; c0 < CNN_CHANNEL0; ++c0) {
-                input[c0][i + 1][j + 1] = image[i][j];
+                input[c0][i][j] = image[i][j];
             }
         }
     }
-    for (int i = 0; i < CNN_M0; ++i) {
-        for (int j = 0; j < CNN_N0; ++j) {
+    for (int i = 0; i < CNN_M0 - CNN_KERNEL1 + 1; ++i) {
+        for (int j = 0; j < CNN_N0 - CNN_KERNEL1 + 1; ++j) {
             for (int c1 = 0; c1 < CNN_CHANNEL1; ++c1) {
                 for (int c0 = 0; c0 < CNN_CHANNEL0; ++c0) {
                     for (int k11 = 0; k11 < CNN_KERNEL1; ++k11) {
@@ -117,8 +107,8 @@ void Backend::analyse(double **image) {
             }
         }
     }
-    for (int i = 0; i < CNN_M0; ++i) {
-        for (int j = 0; j < CNN_N0; ++j) {
+    for (int i = 0; i < CNN_M0 - CNN_KERNEL1 + 1; ++i) {
+        for (int j = 0; j < CNN_N0 - CNN_KERNEL1 + 1; ++j) {
             for (int c1 = 0; c1 < CNN_CHANNEL1; ++c1) {
                 if (output11[c1][i][j] < 0) {
                     output11[c1][i][j] = 0;
@@ -129,12 +119,18 @@ void Backend::analyse(double **image) {
     for (int i = 0; i < CNN_M1; ++i) {
         for (int j = 0; j < CNN_N1; ++j) {
             for (int c1 = 0; c1 < CNN_CHANNEL1; ++c1) {
-                output1[c1][i + 1][j + 1] = maxPool(output11[c1][i + i][j + j], output11[c1][i + i + 1][j + j], output11[c1][i + i][j + j + 1], output11[c1][i + i + 1][j + j + 1]);
+                double value = 0;
+                for (int p11 = 0; p11 < CNN_POOLING1; ++p11) {
+                    for (int p12 = 0; p12 < CNN_POOLING1; ++p12) {
+                        value = std::max(value, output11[c1][i * CNN_POOLING1 + p11][j * CNN_POOLING1 + p12]);
+                    }
+                }
+                output1[c1][i][j] = value;
             }
         }
     }
-    for (int i = 0; i < CNN_M1; ++i) {
-        for (int j = 0; j < CNN_N1; ++j) {
+    for (int i = 0; i < CNN_M1 - CNN_KERNEL2 + 1; ++i) {
+        for (int j = 0; j < CNN_N1 - CNN_KERNEL2 + 1; ++j) {
             for (int c2 = 0; c2 < CNN_CHANNEL2; ++c2) {
                 for (int c1 = 0; c1 < CNN_CHANNEL1; ++c1) {
                     for (int k21 = 0; k21 < CNN_KERNEL2; ++k21) {
@@ -146,8 +142,8 @@ void Backend::analyse(double **image) {
             }
         }
     }
-    for (int i = 0; i < CNN_M1; ++i) {
-        for (int j = 0; j < CNN_N1; ++j) {
+    for (int i = 0; i < CNN_M1 - CNN_KERNEL2 + 1; ++i) {
+        for (int j = 0; j < CNN_N1 - CNN_KERNEL2 + 1; ++j) {
             for (int c2 = 0; c2 < CNN_CHANNEL2; ++c2) {
                 if (output21[c2][i][j] < 0) {
                     output21[c2][i][j] = 0;
@@ -158,7 +154,13 @@ void Backend::analyse(double **image) {
     for (int i = 0; i < CNN_M2; ++i) {
         for (int j = 0; j < CNN_N2; ++j) {
             for (int c2 = 0; c2 < CNN_CHANNEL2; ++c2) {
-                output2[c2][i + 1][j + 1] = maxPool(output21[c2][i + i][j + j], output21[c2][i + i + 1][j + j], output21[c2][i + i][j + j + 1], output21[c2][i + i + 1][j + j + 1]);
+                double value = 0;
+                for (int p21 = 0; p21 < CNN_POOLING2; ++p21) {
+                    for (int p22 = 0; p22 < CNN_POOLING2; ++p22) {
+                        value = std::max(value, output21[c2][i * CNN_POOLING2 + p21][j * CNN_POOLING2 + p22]);
+                    }
+                }
+                output2[c2][i][j] = value;
             }
         }
     }
@@ -166,7 +168,7 @@ void Backend::analyse(double **image) {
         for (int j = 0; j < CNN_N2; ++j) {
             for (int c2 = 0; c2 < CNN_CHANNEL2; ++c2) {
                 for (int c = 0; c < CNN_CATEGORY; ++c) {
-                    output[c] += output2[c2][i + 1][j + 1] * matrixw[c2 * CNN_M2 * CNN_N2 + i * CNN_N2 + j][c];
+                    output[c] += output2[c2][i][j] * matrixw[c2 * CNN_M2 * CNN_N2 + i * CNN_N2 + j][c];
                 }
             }
         }
@@ -182,6 +184,7 @@ void Backend::analyse(double **image) {
     for (int c = 0; c < CNN_CATEGORY; ++c) {
         p[c] = exp(output[c]) / sum;
     }
+    
     for (int c1 = 0; c1 < CNN_CATEGORY - 1; ++c1) {
         for (int c2 = c1 + 1; c2 < CNN_CATEGORY; ++c2) {
             if (p[c1] < p[c2]) {
