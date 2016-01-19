@@ -61,7 +61,6 @@ void Backend::init() {
     for (int c = 0; c < CNN_CATEGORY; ++c) {
         fin >> matrixb[c];
     }
-    std::cout << matrixb[CNN_CATEGORY - 1] << std::endl;
     fin.close();
 }
 
